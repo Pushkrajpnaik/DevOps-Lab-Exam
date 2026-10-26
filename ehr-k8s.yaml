@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ehr-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      tier: ehr
+  template:
+    metadata:
+      labels:
+        tier: ehr
+    spec:
+      containers:
+        - name: ehr-container
+          image: httpd:alpine
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-pods
+spec:
+  type: NodePort
+  selector:
+    tier: ehr
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30092
